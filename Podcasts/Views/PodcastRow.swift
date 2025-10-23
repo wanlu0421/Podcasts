@@ -7,7 +7,8 @@
 import SwiftUI
 
 struct PodcastRow: View {
-    var podcast: Podcast
+    let podcast: Podcast
+    let isFavourite: Bool
     
     var body: some View {
         NavigationLink(value: podcast) {
@@ -22,17 +23,28 @@ struct PodcastRow: View {
                     Color.gray
                 }
                 .frame(width: 80, height: 80)
-                //.padding()
                 
                 VStack(alignment: .leading){
+                    
                     Text(podcast.title)
                         .font(.headline)
+                    
                     Text(podcast.publisher)
                         .foregroundStyle(Color.secondary)
                         .font(.subheadline)
+                        .italic()
+                    
                     Spacer()
+                    
+                    if isFavourite {
+                        Text("Favourited")
+                        .font(.subheadline)
+                            .foregroundStyle(.red)
+                    }
                 }
                 Spacer()
+                
+                
             }
         }
 

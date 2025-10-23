@@ -11,11 +11,13 @@ import SwiftUI
 class PodcastListViewModel: ObservableObject {
     @Published var podcasts: [Podcast] = []
     @Published var navTitle: String = "Podcasts"
-    
+
     private let networkService: NetworkService
+    var favouriteManager: any FavouriteManagerProtocol
     
-    init(networkService: NetworkService = NetworkService()) {
+    init(networkService: NetworkService = NetworkService(), favouriteManager: any FavouriteManagerProtocol = FavouriteManager()) {
         self.networkService = networkService
+        self.favouriteManager = favouriteManager
     }
     
     func loadPodcasts() async {
@@ -30,6 +32,14 @@ class PodcastListViewModel: ObservableObject {
         } catch {
             print("unkonwn error")
         }
-    }    
+    }
+    
+    func toggleFavourite(podcastId: String) {
+        favouriteManager.toggleFavourite(podcastId: podcastId)
+    }
+    
+    func isFavourite(podcastId: String) -> Bool {
+        favouriteManager.isFavourite(podcastId: podcastId)
+    }
     
 }

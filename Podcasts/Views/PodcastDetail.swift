@@ -9,6 +9,11 @@ import SwiftUI
 
 struct PodcastDetail: View {
     var podcast: Podcast
+    @ObservedObject var favouriteManager: FavouriteManager
+    
+    var isFavourite: Bool {
+        favouriteManager.isFavourite(podcastId: podcast.id)
+    }
     
     var body: some View {
         ScrollView{
@@ -35,8 +40,15 @@ struct PodcastDetail: View {
                 .cornerRadius(8)
                 .padding()
                 
-                Button("Favourite") {
-                    print("button pressed")
+                Button {
+                    favouriteManager.toggleFavourite(podcastId: podcast.id)
+                } label: {
+                    Text(isFavourite ? "Favourited" : "Favourite")
+                        .bold()
+                        .frame(width: 130, height: 50)
+                        .background(.red)
+                        .foregroundStyle(.white)
+                        .cornerRadius(20)
                 }
                 .buttonStyle(.plain)
                 
@@ -61,6 +73,6 @@ private let mockPodcast = Podcast(
 )
 #Preview {
     NavigationStack{
-        PodcastDetail(podcast: mockPodcast)
+        PodcastDetail(podcast: mockPodcast, favouriteManager: FavouriteManager())
     }
 }
