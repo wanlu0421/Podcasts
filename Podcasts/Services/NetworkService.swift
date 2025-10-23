@@ -9,8 +9,8 @@ import Foundation
 
 class NetworkService {
     
-    func getPodcasts() async throws -> [Podcast] {
-        let endpoint = "https://listen-api-test.listennotes.com/api/v2/best_podcasts"
+    func getPodcasts(page: Int) async throws -> PodcastResults {
+        let endpoint = "https://listen-api-test.listennotes.com/api/v2/best_podcasts?page=\(page)"
         
         guard let url = URL(string: endpoint) else {
             throw PodcastApiError.invalidURL
@@ -26,7 +26,7 @@ class NetworkService {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             let response = try decoder.decode(PodcastResults.self, from: data)
-            return response.podcasts
+            return response
         } catch {
             throw PodcastApiError.invalidData
         }

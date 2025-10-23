@@ -6,7 +6,9 @@
 //
 
 struct PodcastResults: Codable {
-    var podcasts: [Podcast]
+    let podcasts: [Podcast]
+    let hasNext: Bool?
+    let nextPageNumber: Int?
 }
 
 struct Podcast: Codable, Identifiable, Hashable {
