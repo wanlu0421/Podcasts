@@ -44,20 +44,9 @@ class PodcastListViewModel: ObservableObject {
                 self.hasNextPage = results.hasNext ?? false
             }
             
-        } catch PodcastApiError.invalidURL {
-            print("invalid URL")
+        } catch let error as PodcastApiError {
             await MainActor.run {
-                self.errorMessage = "Invalid URL"
-            }
-        } catch PodcastApiError.invalidData {
-            print("invalid Data")
-            await MainActor.run {
-                self.errorMessage = "Invalid Data"
-            }
-        } catch PodcastApiError.invalidResponse {
-            print("invalid Response")
-            await MainActor.run {
-                self.errorMessage = "Invalid Responsw"
+                self.errorMessage = error.localizedDescription
             }
         } catch {
             print("unkonwn error")

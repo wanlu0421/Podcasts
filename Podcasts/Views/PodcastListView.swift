@@ -12,15 +12,20 @@ struct PodcastListView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(podcastListViewModel.podcasts) { podcast in
-                    PodcastRow(
-                        podcast: podcast,
-                        isFavourite: podcastListViewModel.favouriteManager.isFavourite(podcastId: podcast.id)
-                    )
-                    
-                    //pagination
-                    .task {
-                        await podcastListViewModel.loadMorePodcasts(currentItem: podcast)
+                
+                if podcastListViewModel.podcasts.isEmpty && !podcastListViewModel.isLoading {
+                    Text("Unable to load podcasts. Please try again later.")
+                } else {
+                    ForEach(podcastListViewModel.podcasts) { podcast in
+                        PodcastRow(
+                            podcast: podcast,
+                            isFavourite: podcastListViewModel.favouriteManager.isFavourite(podcastId: podcast.id)
+                        )
+                        
+                        //pagination
+                        .task {
+                            await podcastListViewModel.loadMorePodcasts(currentItem: podcast)
+                        }
                     }
                 }
                 
@@ -42,10 +47,20 @@ struct PodcastListView: View {
             .navigationDestination(for: Podcast.self) { podcast in
                 PodcastDetail(podcast: podcast, favouriteManager: podcastListViewModel.favouriteManager as! FavouriteManager)
             }
+            
+            //error alert
+            .alert("Error", isPresented: .constant(podcastListViewModel.errorMessage != nil)) {
+                Button("OK") {
+                    podcastListViewModel.errorMessage = nil
+                }
+            } message: {
+                Text(podcastListViewModel.errorMessage ?? "Unknown error")
+            }
             .navigationTitle(podcastListViewModel.navTitle)
         }
     }
 }
+
 
 #Preview {
     PodcastListView()

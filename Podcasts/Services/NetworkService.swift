@@ -33,9 +33,3 @@ class NetworkService {
     }
 }
 
-//MARK: - Podcast API Error
-enum PodcastApiError: Error {
-    case invalidURL
-    case invalidResponse
-    case invalidData
-}
