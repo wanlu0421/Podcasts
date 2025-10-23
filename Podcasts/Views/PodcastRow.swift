@@ -11,7 +11,8 @@ struct PodcastRow: View {
     let isFavourite: Bool
     
     var body: some View {
-        NavigationLink(value: podcast) {
+        //using ZStack and transparent NavigationLink to remove the right arrow in List View
+        ZStack{
             HStack{
                 AsyncImage(url: URL(string: podcast.thumbnail)) {
                     thumbnailImage in
@@ -28,6 +29,7 @@ struct PodcastRow: View {
                     
                     Text(podcast.title)
                         .font(.headline)
+                        .bold()
                     
                     Text(podcast.publisher)
                         .foregroundStyle(Color.secondary)
@@ -38,15 +40,16 @@ struct PodcastRow: View {
                     
                     if isFavourite {
                         Text("Favourited")
-                        .font(.subheadline)
+                            .font(.subheadline)
                             .foregroundStyle(.red)
                     }
                 }
                 Spacer()
-                
-                
             }
+            NavigationLink(value: podcast) {
+                EmptyView()
+            }
+            .opacity(0)
         }
-
     }
 }
