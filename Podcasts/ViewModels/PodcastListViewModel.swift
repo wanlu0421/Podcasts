@@ -68,16 +68,22 @@ class PodcastListViewModel: ObservableObject {
     
     //MARK: - loading for next pages
     func loadMorePodcasts(currentItem podcast: Podcast?) async {
-        await MainActor.run {
+        
+        let shouldLoad: Bool = await MainActor.run {
             guard let podcast = podcast,
                   let lastIndex = podcasts.lastIndex(where: { $0.id == podcast.id}),
                   lastIndex >= podcasts.count - 2, //load next page when reach the second to last item
                   hasNextPage,
                   !isLoading
-            else { return }
+            else { return false}
+            
+            isLoading = true
+            return true
         }
         
-        await loadPodcasts(page: currentPage + 1)
+        if shouldLoad {
+            await loadPodcasts(page: currentPage + 1)
+        }
         
     }
     
