@@ -16,22 +16,33 @@ struct PodcastDetail: View {
                 Text(podcast.title)
                     .font(Font.largeTitle.bold())
                     .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+                    .multilineTextAlignment(.center)
+                
                 Text(podcast.publisher)
                     .font(.title2)
                     .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                
                 AsyncImage(url: URL(string: podcast.thumbnail)) {
                     thumbnailImage in
                     thumbnailImage
                         .resizable()
                         .scaledToFit()
-                        .cornerRadius(8)
                 } placeholder: {
                     Color.gray
                 }
                 .frame(width: 250, height: 250)
+                .cornerRadius(8)
                 .padding()
+                
+                Button("Favourite") {
+                    print("button pressed")
+                }
+                .buttonStyle(.plain)
+                
                 Text(podcast.description)
                     .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
                     .padding()
                 Spacer()
             }
