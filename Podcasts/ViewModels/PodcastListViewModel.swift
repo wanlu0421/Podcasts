@@ -26,35 +26,49 @@ class PodcastListViewModel: ObservableObject {
     }
     
     func loadPodcasts(page: Int) async {
-        guard !isLoading && hasNextPage else { return }
-        
-        isLoading = true
-        errorMessage = nil
+        await MainActor.run {
+            guard !isLoading && hasNextPage else { return }
+            
+            isLoading = true
+            errorMessage = nil
+        }
         
         do {
             
             let results = try await networkService.getPodcasts(page: page)
             
-            self.podcasts.append(contentsOf: results.podcasts)
-            
-            self.currentPage = page
-            self.hasNextPage = results.hasNext ?? false
+            await MainActor.run {
+                self.podcasts.append(contentsOf: results.podcasts)
+                
+                self.currentPage = page
+                self.hasNextPage = results.hasNext ?? false
+            }
             
         } catch PodcastApiError.invalidURL {
             print("invalid URL")
-            errorMessage = "Invalid URL"
+            await MainActor.run {
+                self.errorMessage = "Invalid URL"
+            }
         } catch PodcastApiError.invalidData {
             print("invalid Data")
-            errorMessage = "Invalid Data"
+            await MainActor.run {
+                self.errorMessage = "Invalid Data"
+            }
         } catch PodcastApiError.invalidResponse {
             print("invalid Response")
-            errorMessage = "Invalid Response"
+            await MainActor.run {
+                self.errorMessage = "Invalid Responsw"
+            }
         } catch {
             print("unkonwn error")
-            errorMessage = "Unknown Error"
+            await MainActor.run {
+                self.errorMessage = "Unkonwn Error"
+            }
         }
         
-        isLoading = false
+        await MainActor.run {
+            self.isLoading = false
+        }
     }
     
     //MARK: - loading at first time
@@ -65,12 +79,14 @@ class PodcastListViewModel: ObservableObject {
     
     //MARK: - loading for next pages
     func loadMorePodcasts(currentItem podcast: Podcast?) async {
-        guard let podcast = podcast,
-              let lastIndex = podcasts.lastIndex(where: { $0.id == podcast.id}),
-              lastIndex >= podcasts.count - 2, //load next page when reach the second to last item
-              hasNextPage,
-              !isLoading
-        else { return }
+        await MainActor.run {
+            guard let podcast = podcast,
+                  let lastIndex = podcasts.lastIndex(where: { $0.id == podcast.id}),
+                  lastIndex >= podcasts.count - 2, //load next page when reach the second to last item
+                  hasNextPage,
+                  !isLoading
+            else { return }
+        }
         
         await loadPodcasts(page: currentPage + 1)
         
