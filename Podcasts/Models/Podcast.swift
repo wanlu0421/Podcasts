@@ -9,9 +9,10 @@ struct PodcastResults: Codable {
     var podcasts: [Podcast]
 }
 
-struct Podcast: Codable, Identifiable {
+struct Podcast: Codable, Identifiable, Hashable {
     let id: String
     let title: String
     let thumbnail: String
     let publisher: String
+    let description: String
 }

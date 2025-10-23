@@ -10,6 +10,7 @@ import SwiftUI
 
 class PodcastListViewModel: ObservableObject {
     @Published var podcasts: [Podcast] = []
+    @Published var navTitle: String = "Podcasts"
     
     private let networkService: NetworkService
     

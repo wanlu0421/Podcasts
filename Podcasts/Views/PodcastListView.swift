@@ -10,15 +10,21 @@ struct PodcastListView: View {
     @StateObject private var podcastListViewModel = PodcastListViewModel()
     
     var body: some View {
-        List {
-            ForEach(podcastListViewModel.podcasts) { podcast in
-                PodcastRow(podcast: podcast)
+        NavigationStack {
+            List {
+                ForEach(podcastListViewModel.podcasts) { podcast in
+                    PodcastRow(podcast: podcast)
+                }
             }
+            .task {
+                await podcastListViewModel.loadPodcasts()
+            }
+            .listStyle(.plain)
+            .navigationDestination(for: Podcast.self) { podcast in
+                PodcastDetail(podcast: podcast)
+            }
+            .navigationTitle(podcastListViewModel.navTitle)
         }
-        .task {
-            await podcastListViewModel.loadPodcasts()
-        }
-        .listStyle(.plain)
     }
 }
 
