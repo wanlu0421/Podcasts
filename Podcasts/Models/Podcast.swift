@@ -12,4 +12,6 @@ struct PodcastResults: Codable {
 struct Podcast: Codable, Identifiable {
     let id: String
     let title: String
+    let thumbnail: String
+    let publisher: String
 }

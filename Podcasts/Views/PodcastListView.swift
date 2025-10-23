@@ -12,12 +12,13 @@ struct PodcastListView: View {
     var body: some View {
         List {
             ForEach(podcastListViewModel.podcasts) { podcast in
-                Text(podcast.title)
+                PodcastRow(podcast: podcast)
             }
         }
         .task {
             await podcastListViewModel.loadPodcasts()
         }
+        .listStyle(.plain)
     }
 }
 
